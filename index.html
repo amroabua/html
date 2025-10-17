@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar System Class Diagram</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+        #controls {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #diagram-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: auto;
+        }
+        #diagram {
+            min-width: 1200px;
+        }
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border-left: 4px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="diagram">
+        <strong> Class Diagram:</strong>
+    </div>
+    
+    <div id="diagram-container">
+        <div id="diagram"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                fontSize: '14px'
+            }
+        });
+
+        const diagramCode = `classDiagram
+    class SolarSystemELearningPanel {
+        -JLabel planetIconLabel
+        -JTable factSheetTable
+        -JEditorPane descriptionArea
+        -JComboBox starChooser
+        -Timer randomTimer
+        -JLabel bannerLabel
+        -Random rand
+        -AnimatedStarPanel centerPanel
+        +SolarSystemELearningPanel()
+        -buildStarPanel() JPanel
+        +startRandomAnimation() void
+        +stopRandomAnimation() void
+        -showStarDescription(star) void
+        +updateInfo(star) void
+        -updatePlanetIcon(star) void
+        -startBannerAnimation() void
+        +main(args) void
+    }
+
+    class AnimatedStarPanel {
+        -int STAR_COUNT
+        -Point[] stars
+        -int[] sizes
+        -Timer twinkleTimer
+        +AnimatedStarPanel()
+        #paintComponent(g) void
+    }
+
+    class StarButtonListener {
+        -SolarSystemStarEnum star
+        +StarButtonListener(star)
+        +actionPerformed(e) void
+    }
+
+    class TimerEventHandler {
+        +actionPerformed(e) void
+    }
+
+    class SolarSystemStarEnum {
+        <<enumeration>>
+        SUN
+        MERCURY
+        VENUS
+        EARTH
+        MARS
+        JUPITER
+        SATURN
+        URANUS
+        NEPTUNE
+        PLUTO
+        MOON
+        ASTEROID
+        -double mass
+        -double radius
+        -SolarSystemStarEnum(mass, radius)
+        +mass() double
+        +radius() double
+        +description() String
+        +randomChooseStar() SolarSystemStarEnum
+    }
+
+    class SolarSystemStarIcon {
+        -SolarSystemStarEnum starCode
+        -int width
+        -int height
+        -int top
+        -int left
+        -Image solarPicture
+        -double ratio
+        -BufferedImage roundCornerImage
+        +SolarSystemStarIcon(starCode)
+        -setValues() void
+        +getRatio() double
+        +getIconHeight() int
+        +getIconWidth() int
+        +paintIcon(c, g, x, y) void
+        +setRatio(d) void
+        +createRoundedImage(image, r) BufferedImage
+        +main(args) void
+    }
+
+    class StarDataLoader {
+        -Properties starDescriptions
+        -String FILE_PATH
+        -loadDescriptions() void
+        +getDescription(ssse) String
+        +reloadDescriptions() void
+    }
+
+    class SolarSystemInfoPanel {
+        -JTextArea starDescription
+        +SolarSystemInfoPanel()
+        -createStarTable() JTable
+        -loadData() Object[][]
+        +main(args) void
+    }
+
+    class PickAStarPanel {
+        -int star
+        -JTextField starDesc
+        -JLabel starPixLabel
+        +PickAStarPanel(star)
+        -createSelectPanel(panel) JPanel
+        #resetStar(star) void
+        +getStar() int
+        +main(args) void
+    }
+
+    class StarIcon {
+        +int SUN
+        +int MOON
+        +int MARS
+        +int MERCURY
+        +int JUPITER
+        +int VENUS
+        +int SATURN
+        -int width
+        -int height
+        -int top
+        -int left
+        -int starCode
+        -Image solarPicture
+        +StarIcon(starCode)
+        -setValues() void
+        +getIconWidth() int
+        +getIconHeight() int
+        +paintIcon(c, g, x, y) void
+    }
+
+    class SolarSystemELearningPanelTest {
+        -SolarSystemELearningPanel panel
+        +setUp() void
+        +testConstructor_NotNullComponents() void
+        +testUpdateInfo_UpdatesDescriptionAndTable() void
+        +testStartAndStopRandomAnimation() void
+    }
+
+    class TestUtils {
+        +getPrivateField(obj, name) Object
+    }
+
+    SolarSystemELearningPanel *-- AnimatedStarPanel : contains
+    SolarSystemELearningPanel *-- StarButtonListener : contains
+    SolarSystemELearningPanel *-- TimerEventHandler : contains
+    SolarSystemELearningPanel ..> SolarSystemStarEnum : uses
+    SolarSystemELearningPanel ..> SolarSystemStarIcon : uses
+    
+    StarButtonListener ..> SolarSystemStarEnum : uses
+    TimerEventHandler ..> SolarSystemStarEnum : uses
+    
+    SolarSystemStarIcon ..> SolarSystemStarEnum : uses
+    
+    SolarSystemStarEnum ..> StarDataLoader : uses
+    
+    SolarSystemInfoPanel o-- PickAStarPanel : contains
+    
+    PickAStarPanel ..> StarIcon : uses
+    
+    SolarSystemELearningPanelTest ..> SolarSystemELearningPanel : tests
+    SolarSystemELearningPanelTest ..> TestUtils : uses
+    
+    StarIcon ..|> Icon : implements
+    SolarSystemStarIcon ..|> Icon : implements`;
+
+        mermaid.render('mermaid-diagram', diagramCode).then(result => {
+            document.getElementById('diagram').innerHTML = result.svg;
+        });
+
+        async function downloadDiagram() {
+            const svg = document.querySelector('#diagram svg');
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+
+            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+            const url = URL.createObjectURL(svgBlob);
+
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+                
+                canvas.toBlob(function(blob) {
+                    const link = document.createElement('a');
+                    link.download = 'solar-system-class-diagram.png';
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                    URL.revokeObjectURL(url);
+                });
+            };
+
+            img.src = url;
+        }
+    </script>
+</body>
+</html>
