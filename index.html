@@ -157,14 +157,6 @@
         +reloadDescriptions() void
     }
 
-    class SolarSystemInfoPanel {
-        -JTextArea starDescription
-        +SolarSystemInfoPanel()
-        -createStarTable() JTable
-        -loadData() Object[][]
-        +main(args) void
-    }
-
     class PickAStarPanel {
         -int star
         -JTextField starDesc
@@ -196,6 +188,8 @@
         +getIconHeight() int
         +paintIcon(c, g, x, y) void
     }
+    
+    note for StarIcon "Package: workshop4"
 
     class SolarSystemELearningPanelTest {
         -SolarSystemELearningPanel panel
@@ -221,8 +215,6 @@
     SolarSystemStarIcon ..> SolarSystemStarEnum : uses
     
     SolarSystemStarEnum ..> StarDataLoader : uses
-    
-    SolarSystemInfoPanel o-- PickAStarPanel : contains
     
     PickAStarPanel ..> StarIcon : uses
     
