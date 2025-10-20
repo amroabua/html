@@ -49,7 +49,7 @@
 </head>
 <body>
     <div class="diagram">
-        <strong> Class Diagram:</strong>
+        <strong>Solar System Class Diagram:</strong>
     </div>
     
     <div id="diagram-container">
@@ -71,7 +71,7 @@
         -JLabel planetIconLabel
         -JTable factSheetTable
         -JEditorPane descriptionArea
-        -JComboBox starChooser
+        -JComboBox~SolarSystemStarEnum~ starChooser
         -Timer randomTimer
         -JLabel bannerLabel
         -Random rand
@@ -129,22 +129,36 @@
         +randomChooseStar() SolarSystemStarEnum
     }
 
-    class SolarSystemStarIcon {
-        -SolarSystemStarEnum starCode
+    class StarIcon {
+        +int SUN
+        +int MOON
+        +int MARS
+        +int MERCURY
+        +int JUPITER
+        +int VENUS
+        +int SATURN
         -int width
         -int height
         -int top
         -int left
+        -int starCode
+        -SolarSystemStarEnum starEnum
         -Image solarPicture
         -double ratio
         -BufferedImage roundCornerImage
-        +SolarSystemStarIcon(starCode)
-        -setValues() void
+        -boolean useRoundedCorners
+        +StarIcon(starCode)
+        +StarIcon(starCode, roundedCorners)
+        +StarIcon(starEnum)
+        +StarIcon(starEnum, roundedCorners)
+        -setValuesLegacy() void
+        -setValuesFromEnum() void
+        -createRoundedVersion() void
         +getRatio() double
-        +getIconHeight() int
+        +setRatio(ratio) void
         +getIconWidth() int
+        +getIconHeight() int
         +paintIcon(c, g, x, y) void
-        +setRatio(d) void
         +createRoundedImage(image, r) BufferedImage
         +main(args) void
     }
@@ -168,29 +182,6 @@
         +main(args) void
     }
 
-    class StarIcon {
-        +int SUN
-        +int MOON
-        +int MARS
-        +int MERCURY
-        +int JUPITER
-        +int VENUS
-        +int SATURN
-        -int width
-        -int height
-        -int top
-        -int left
-        -int starCode
-        -Image solarPicture
-        +StarIcon(starCode)
-        -setValues() void
-        +getIconWidth() int
-        +getIconHeight() int
-        +paintIcon(c, g, x, y) void
-    }
-    
-    note for StarIcon "Package: workshop4"
-
     class SolarSystemELearningPanelTest {
         -SolarSystemELearningPanel panel
         +setUp() void
@@ -203,26 +194,46 @@
         +getPrivateField(obj, name) Object
     }
 
+    class Icon {
+        <<interface>>
+        +getIconWidth() int
+        +getIconHeight() int
+        +paintIcon(c, g, x, y) void
+    }
+
+    class ActionListener {
+        <<interface>>
+        +actionPerformed(e) void
+    }
+
     SolarSystemELearningPanel *-- AnimatedStarPanel : contains
-    SolarSystemELearningPanel *-- StarButtonListener : contains
-    SolarSystemELearningPanel *-- TimerEventHandler : contains
+    SolarSystemELearningPanel *-- StarButtonListener : inner class
+    SolarSystemELearningPanel *-- TimerEventHandler : inner class
     SolarSystemELearningPanel ..> SolarSystemStarEnum : uses
-    SolarSystemELearningPanel ..> SolarSystemStarIcon : uses
+    SolarSystemELearningPanel ..> StarIcon : uses
     
+    AnimatedStarPanel --|> JPanel : extends
+    
+    StarButtonListener ..|> ActionListener : implements
     StarButtonListener ..> SolarSystemStarEnum : uses
+    
+    TimerEventHandler ..|> ActionListener : implements
     TimerEventHandler ..> SolarSystemStarEnum : uses
     
-    SolarSystemStarIcon ..> SolarSystemStarEnum : uses
+    StarIcon ..|> Icon : implements
+    StarIcon ..> SolarSystemStarEnum : uses
     
     SolarSystemStarEnum ..> StarDataLoader : uses
     
+    PickAStarPanel --|> JPanel : extends
     PickAStarPanel ..> StarIcon : uses
     
     SolarSystemELearningPanelTest ..> SolarSystemELearningPanel : tests
     SolarSystemELearningPanelTest ..> TestUtils : uses
     
-    StarIcon ..|> Icon : implements
-    SolarSystemStarIcon ..|> Icon : implements`;
+    note for StarIcon "Package: workshop4\\nSupports both legacy int constants\\nand SolarSystemStarEnum"
+    note for SolarSystemStarEnum "Package: workshop4\\nContains mass and radius data\\nLoads descriptions from file"
+    note for StarDataLoader "Package: workshop4\\nReads from data/stars.properties"`;
 
         mermaid.render('mermaid-diagram', diagramCode).then(result => {
             document.getElementById('diagram').innerHTML = result.svg;
